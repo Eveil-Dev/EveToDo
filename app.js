@@ -1,26 +1,21 @@
-const tasks = [
-    {
-        description: 'Ler um livro'
+const Storage = {
+    get(){
+        return JSON.parse(localStorage.getItem("eveTodo:tasks")) || []
     },
-    {
-        description: 'Fazer lição de casa'
-    },
-    {
-        description: 'varrer o chao do quarto'
-    },
-    {
-        description: 'Fazer comida'
+    set(tasks){
+        localStorage.setItem("eveTodo:tasks", JSON.stringify(tasks))
     }
-]
+}
 
 const Card = {
-    all: tasks,
+    all: Storage.get(),
     add(task){
         Card.all.push(task);
         App.reload();
     },
-    remove(){
-
+    remove(index){
+        Card.all.splice(index, 1);
+        App.reload();
     }
 }
 
@@ -29,14 +24,15 @@ const DOM = {
     addCard(task, index){
         const card = document.createElement('div');
         card.classList.add('card');
-        card.innerHTML = DOM.innerHTMLCard(task);
+        card.innerHTML = DOM.innerHTMLCard(task, index);
+        card.dataset.index = index;
         DOM.cardContainer.appendChild(card);
     },
-    innerHTMLCard(task){
+    innerHTMLCard(task, index){
         const html = `
             <div class="text">${task.description}</div>
             <button class="done"><i class="fa fa-check" aria-hidden="true"></i></button>
-            <button class="delete"><i class="fa fa-trash" aria-hidden="true"></i></button> 
+            <button class="delete" onclick="Card.remove(${index})"><i class="fa fa-trash" aria-hidden="true"></i></button> 
         `
         return html;
     },
@@ -45,11 +41,40 @@ const DOM = {
     }
 }
 
+const Form = {
+    description: document.querySelector('input#todoInput'),
+
+    getValues(){
+        return {
+            description: Form.description.value
+        }
+    },
+    validateField(){
+        const { description } = Form.getValues();
+        if(description.trim() === ""){
+            throw new Error("Preencha o campo");
+        }
+    },
+    clearField(){
+        Form.description.value = ""
+    },
+    submit(event){
+        event.preventDefault();
+
+        try{
+            Form.validateField();
+            Card.add(this.getValues());
+            Form.clearField();
+        }catch(error){
+            alert(error.message);
+        }       
+    }
+}
+
 const App = {
     init(){
-        Card.all.forEach(task => {
-            DOM.addCard(task)
-        })
+        Card.all.forEach(DOM.addCard)
+        Storage.set(Card.all);
     },
     reload(){
         DOM.clearCards();
@@ -58,15 +83,3 @@ const App = {
 }
 
 App.init();
-
-Card.add({
-    description: 'Lavar louça'
-})
-
-Card.add({
-    description: 'Arrumar o guarda-roupa'
-})
-
-Card.add({
-    description: 'Lavar a roupa'
-})
