@@ -6,6 +6,12 @@
     box-sizing: border-box;
 }
 
+
+.fa-check,
+.fa-trash{
+    pointer-events: none;
+}
+
 /* ========== VARS ========== */
 
 :root{
@@ -75,6 +81,32 @@ form{
     color: white;    
 }
 
+/*========== filter ========== */
+
+.select{
+    margin-left: 0.5rem;
+    box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.2);
+    flex-shrink: 0;
+}
+
+
+select{
+    outline: none;
+    border: none;
+
+    color: var(--base-color);
+    width: 10rem;
+    height: 3rem;
+    padding-left: 1rem;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+}
+
+
+
+
+
 /* ========== cards-to-do ========== */
 
 #cards{
@@ -97,6 +129,8 @@ form{
 
     display: flex;
     align-items: center;
+
+    transition: all 0.2s ease;
 }
 
 .card .text{
@@ -110,6 +144,7 @@ form{
     box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.2);
 }
 
+/* ========== button cards ========== */
 
 .delete{
     color: white;
@@ -119,4 +154,11 @@ form{
 .done{
     color: white;
     background-color: #00afb9;
+}
+
+/* ========== js manipulation ========== */
+
+.completed{
+    text-decoration: line-through;
+    opacity: 0.5;
 }

@@ -18,19 +18,26 @@
     <header>
         <h1>Eve's To-do</h1>
     </header>
-    <form action="" onsubmit="Form.submit(event)">
+    <form>
         <!--O label está pegando o sr-only do font-awesome-->
         <div class="todo-wrapper">
             <label for="to-do" class="sr-only">Descrição da tarefa</label>
-            <input type="text" class="todo-input" name="todo-input" id="todoInput" placeholder="To-do">
-            <button class="add"><i class="fa fa-plus" aria-hidden="true"></i></button>
+            <input type="text" autocomplete="off" class="todo-input" name="todo-input" id="todoInput" placeholder="To-do">
+            <button type="submit" class="add">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+            </button>
+            <div class="select">
+                <select name="todos" class="filter-todos">
+                    <option value="all">All</option>
+                    <option value="completed">Completed</option>
+                    <option value="uncompleted">Uncompleted</option>
+                </select>
+            </div>
         </div>
     </form>
 
     <section id="cards">
-        <div class="cards">
-            
-        </div>
+        <div class="cards"></div>
     </section>
 
     <script src="app.js"></script>
