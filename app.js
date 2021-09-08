@@ -7,7 +7,7 @@ const filterOption = document.querySelector('.filter-todos')
 
 /* Event Listeners */
 
-document.addEventListener('DOMContentLoaded', getTodos);
+document.addEventListener('DOMContentLoaded', setupItems);
 addButton.addEventListener('click', addTask);
 cardsContainer.addEventListener('click', deleteAndCheckTask);
 filterOption.addEventListener('click', filterTodo);
@@ -15,13 +15,16 @@ filterOption.addEventListener('click', filterTodo);
 
 /* functions */
 
-function addTask(event){
-    event.preventDefault();
+function addTask(e){
+    e.preventDefault();
+
+    const value = todoInput.value;
+    const id = new Date().getTime().toString();
 
     /*create new item*/
 
     const htmlCard = `
-        <div class="text">${todoInput.value}</div>
+        <div class="text">${value}</div>
         <button class="done">
             <i class="fa fa-check" aria-hidden="true"></i>
         </button>
@@ -30,13 +33,16 @@ function addTask(event){
         </button>
     `
     const card = document.createElement('div');
+    let attr = document.createAttribute('data-id');
+    attr.value = id;
+    card.setAttributeNode(attr);
     card.classList.add('card');
     card.innerHTML = htmlCard;
     cardsContainer.appendChild(card);
 
     /*add to a LocalStorage*/
 
-    saveLocalTodos(todoInput.value);
+    addToLocalStorage(id,value, "");
 
     /*clear to-do input value*/
 
@@ -50,7 +56,8 @@ function deleteAndCheckTask(e){
 
     if(item.classList[0] === 'delete'){
         const todo = item.parentElement;
-        removeLocalTodos(todo);
+        const id = todo.dataset.id;
+        removeFromLocalStorage(id);
         todo.remove();
     }
 
@@ -58,7 +65,16 @@ function deleteAndCheckTask(e){
 
     if(item.classList[0] === 'done'){
         const todo = item.parentElement;
-        todo.classList.toggle('completed');
+        const id = todo.dataset.id;
+
+        if(todo.classList.contains('completed')){
+            todo.classList.remove('completed');
+            unCheckInLocalStorage(id);
+        }else{
+            todo.classList.add('completed');
+            checkInLocalStorage(id);
+        }
+
     }
 }
 
@@ -89,31 +105,73 @@ function filterTodo(e){
     })
 }
 
-function saveLocalTodos(todo){
-    let todos;
+//LOCAL STORAGE
 
-    if(localStorage.getItem("todos") === null){
-        todos = [];
-    }else{
-        todos = JSON.parse(localStorage.getItem("todos"));
-    }
+function getLocalStorage(){
+    return localStorage.getItem("todos") ? JSON.parse(localStorage.getItem("todos")) : [];
+}
 
-    todos.push(todo);
+function addToLocalStorage(taskId, taskValue, taskStatus){
+    const task = {taskId, taskValue, taskStatus};
+    
+    let todos = getLocalStorage();
+
+    todos.push(task);
     localStorage.setItem("todos", JSON.stringify(todos));
 }
 
-function getTodos(){
-    let todos;
+function removeFromLocalStorage(id){
+    let todos = getLocalStorage();
 
-    if(localStorage.getItem("todos") === null){
-        todos = [];
-    }else{
-        todos = JSON.parse(localStorage.getItem("todos"));
-    }
+    todos = todos.filter(function(item){
+        if(item.taskId !== id){
+            return item;
+        }
+    });
+
+    localStorage.setItem("todos", JSON.stringify(todos));
+}
+
+function checkInLocalStorage(id){
+    let todos = getLocalStorage();
 
     todos.forEach(function(item){
-        const htmlCard = `
-        <div class="text">${item}</div>
+        if(item.taskId == id){
+            item.taskStatus = "checked";
+        }
+    })
+
+    localStorage.setItem("todos", JSON.stringify(todos));
+
+}
+
+function unCheckInLocalStorage(id){
+    let todos = getLocalStorage();
+
+    todos.forEach(function(item){
+        if(item.taskId == id){
+            item.taskStatus = "";
+        }
+    })
+
+    localStorage.setItem("todos", JSON.stringify(todos));
+}
+
+//SETUP ITEMS
+
+function setupItems(){
+    let todos = getLocalStorage();
+
+    if(todos.length > 0){
+        todos.forEach(function(item){
+            createItem(item.taskId, item.taskValue, item.taskStatus);
+        });
+    }
+}
+
+function createItem(id, value, status){
+    const htmlCard = `
+        <div class="text">${value}</div>
         <button class="done">
             <i class="fa fa-check" aria-hidden="true"></i>
         </button>
@@ -122,23 +180,15 @@ function getTodos(){
         </button>
     `
     const card = document.createElement('div');
+    let attr = document.createAttribute('data-id');
+    attr.value = id;
+    card.setAttributeNode(attr);
     card.classList.add('card');
     card.innerHTML = htmlCard;
     cardsContainer.appendChild(card);
-    });
-}
 
-function removeLocalTodos(todo){
-    let todos;
-
-    if(localStorage.getItem("todos") === null){
-        todos = [];
-    }else{
-        todos = JSON.parse(localStorage.getItem("todos"));
+    if(status == "checked"){
+        card.classList.add('completed');
     }
 
-    const todoIndex = todo.children[0].innerText;
-    todos.splice(todos.indexOf(todoIndex), 1);
-    localStorage.setItem('todos', JSON.stringify(todos))
-    
 }
