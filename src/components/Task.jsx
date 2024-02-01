@@ -1,12 +1,18 @@
 import iconCheck from "../assets/images/icon-check.svg";
+import iconCross from "../assets/images/icon-cross.svg";
 
-function Task({ task }) {
+function Task({ task, onCheck, onRemove }) {
   return (
-    <div className="todo-task">
-      <div className="check">
-        <img src={iconCheck} />
+    <div className={`todo-task ${task.completed && "completed"}`}>
+      <div>
+        <button className="check" onClick={(e) => onCheck(task.id)}>
+          <img src={iconCheck} />
+        </button>
+        <span>{task.title}</span>
       </div>
-      <span>Fazer compras</span>
+      <button className="remove" onClick={(e) => onRemove(task.id)}>
+        <img src={iconCross} />
+      </button>
     </div>
   );
 }

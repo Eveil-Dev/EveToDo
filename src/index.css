@@ -48,6 +48,17 @@ button {
   cursor: pointer;
 }
 
+.check {
+  width: 24px;
+  height: 24px;
+  background-color: transparent;
+  border-radius: 50em;
+  border: 1px solid #e8e8e8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .todo-form {
   width: 100%;
   background-color: white;
@@ -57,19 +68,12 @@ button {
   align-items: center;
 }
 
-.check {
-  width: 24px;
-  height: 24px;
-  margin-left: 16px;
-  border-radius: 50em;
-  border: 1px solid #e8e8e8;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.todo-form .check {
+  margin: 20px;
 }
 
 .todo-form .input-text {
-  padding: 20px 10px;
+  padding: 20px 0;
   font-size: 20px;
   outline: none;
   border: none;
@@ -108,16 +112,10 @@ button {
   flex: 1 1 200px;
 }
 
-.todo-tasks .check:hover {
-  background: linear-gradient(white, white) padding-box,
-    linear-gradient(to right, hsl(192, 100%, 67%), hsl(280, 87%, 65%))
-      border-box;
-  border: 1px solid transparent;
-}
-
-.todo-tasks .check.checked {
-  background: linear-gradient(hsl(192, 100%, 67%), hsl(280, 87%, 65%));
-  border: none;
+.todo-message {
+  display: block;
+  margin: 20px;
+  color: #a8a7a7;
 }
 
 .todo-task {
@@ -125,10 +123,53 @@ button {
   border-radius: 6px;
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 20px 8px;
+  justify-content: space-between;
+  padding: 20px 20px;
   border-bottom: 1px solid #e8e8e8;
   font-size: 20px;
+}
+
+.todo-task > div {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.todo-task .remove {
+  width: 24px;
+  height: 24px;
+  background-color: transparent;
+  border: none;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.1s ease-in-out;
+  cursor: pointer;
+}
+
+.todo-task:hover .remove {
+  opacity: 1;
+  transition: opacity 0.1s ease-in-out;
+}
+
+.todo-task .check:hover {
+  background: linear-gradient(white, white) padding-box,
+    linear-gradient(to right, hsl(192, 100%, 67%), hsl(280, 87%, 65%))
+      border-box;
+  border: 1px solid transparent;
+}
+
+.todo-task.completed .check {
+  background: linear-gradient(hsl(192, 100%, 67%), hsl(280, 87%, 65%));
+  border: none;
+}
+
+.todo-task.completed span {
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+  color: #cac9c9;
 }
 
 .todo-footer {
