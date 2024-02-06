@@ -4,6 +4,18 @@
   box-sizing: border-box;
 }
 
+:root {
+  --background-image: url("./assets/images/bg-mobile-light.jpg");
+  --background-color: hsl(233, 33%, 99%);
+  --background-task: hsl(233, 33%, 99%);
+  --font: hsl(235, 19%, 35%);
+  --soft-font: hsl(236, 9%, 61%);
+  --very-soft-font: hsl(233, 11%, 84%);
+  --shadow: rgba(149, 157, 165, 0.2);
+  --scroll-track: hsl(240, 16%, 91%);
+  --scroll-thumb: hsl(236, 16%, 80%);
+}
+
 body {
   font-family: "Josefin Sans", sans-serif;
 }
@@ -16,10 +28,22 @@ button {
   font-family: "Josefin Sans", sans-serif;
 }
 
+.dark-mode {
+  --background-image: url("./assets/images/bg-mobile-dark.jpg");
+  --background-color: hsl(235, 21%, 11%);
+  --background-task: hsl(235, 24%, 19%);
+  --font: hsl(234, 39%, 85%);
+  --soft-font: hsl(234, 11%, 52%);
+  --very-soft-font: hsl(233, 14%, 35%);
+  --shadow: rgba(0, 0, 0, 0.2);
+  --scroll-track: hsl(233, 19%, 24%);
+  --scroll-thumb: hsl(236, 18%, 31%);
+}
+
 .background {
-  background: no-repeat url("./assets/images/bg-desktop-light.jpg");
+  background: no-repeat var(--background-image);
+  background-color: var(--background-color);
   background-size: 100%;
-  background-position-y: -15%;
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -29,7 +53,8 @@ button {
 .todo-container {
   max-width: 700px;
   width: 100%;
-  height: 80vh;
+  height: 85vh;
+  padding: 36px 20px;
   margin: auto;
   display: flex;
   flex-direction: column;
@@ -53,7 +78,7 @@ button {
   height: 24px;
   background-color: transparent;
   border-radius: 50em;
-  border: 1px solid #e8e8e8;
+  border: 2px solid var(--very-soft-font);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -61,11 +86,12 @@ button {
 
 .todo-form {
   width: 100%;
-  background-color: white;
-  margin: 32px 0;
+  margin: 24px 0;
   border-radius: 6px;
   display: flex;
   align-items: center;
+  background-color: var(--background-task);
+  box-shadow: var(--shadow) 0px 8px 24px;
 }
 
 .todo-form .check {
@@ -73,19 +99,21 @@ button {
 }
 
 .todo-form .input-text {
-  padding: 20px 0;
+  padding: 16px 16px 16px 0;
   font-size: 20px;
   outline: none;
   border: none;
   flex-grow: 1;
   border-radius: 6px;
+  background-color: var(--background-task);
+  color: var(--font);
 }
 
 .todo-main {
-  background-color: white;
+  background-color: var(--background-task);
   width: 100%;
   flex: 1 1 200px;
-  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  box-shadow: var(--shadow) 0px 8px 24px;
   border-radius: 6px;
   display: flex;
   flex-direction: column;
@@ -99,12 +127,12 @@ button {
 
 /* Track */
 .styled-scroll::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--scroll-track);
 }
 
 /* Handle */
 .styled-scroll::-webkit-scrollbar-thumb {
-  background: #c2c2c2;
+  background: var(--scroll-thumb);
 }
 
 .todo-tasks {
@@ -115,7 +143,7 @@ button {
 .todo-message {
   display: block;
   margin: 20px;
-  color: #a8a7a7;
+  color: var(--soft-font);
 }
 
 .todo-task {
@@ -125,8 +153,9 @@ button {
   align-items: center;
   justify-content: space-between;
   padding: 20px 20px;
-  border-bottom: 1px solid #e8e8e8;
+  border-bottom: 1px solid var(--very-soft-font);
   font-size: 20px;
+  color: var(--font);
 }
 
 .todo-task > div {
@@ -155,10 +184,11 @@ button {
 }
 
 .todo-task .check:hover {
-  background: linear-gradient(white, white) padding-box,
+  background: linear-gradient(var(--background-task), var(--background-task))
+      padding-box,
     linear-gradient(to right, hsl(192, 100%, 67%), hsl(280, 87%, 65%))
       border-box;
-  border: 1px solid transparent;
+  border: 2px solid transparent;
 }
 
 .todo-task.completed .check {
@@ -175,36 +205,87 @@ button {
 .todo-footer {
   padding: 20px;
   display: flex;
-  display: flex;
+  justify-content: space-between;
   align-items: center;
   justify-content: space-between;
-}
-
-.todo-footer span {
-  color: #a8a7a7;
+  position: relative;
 }
 
 .todo-footer button {
   background: none;
   border: none;
-  color: #a8a7a7;
+  color: var(--soft-font);
   font-size: 16px;
   cursor: pointer;
 }
 
 .todo-footer button:hover {
-  color: #616161;
+  color: var(--font);
 }
 
 .todo-footer button.active {
   color: hsl(192, 66%, 57%);
 }
 
+.todo-footer .count {
+  color: var(--soft-font);
+}
+
 .filter-buttons {
   display: flex;
   gap: 8px;
+  justify-content: center;
+  width: 100%;
+  height: 50px;
+  background: var(--background-task);
+  box-shadow: var(--shadow) 0px 8px 24px;
+  border-radius: 6px;
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .filter-buttons button {
   font-weight: bold;
+}
+
+@media (min-width: 576px) {
+  :root {
+    --background-image: url("./assets/images/bg-desktop-light.jpg");
+  }
+
+  .dark-mode {
+    --background-image: url("./assets/images/bg-desktop-dark.jpg");
+  }
+
+  .background {
+    background-size: unset;
+  }
+
+  .mobile-none {
+    display: block;
+  }
+
+  .todo-footer {
+    justify-content: space-between;
+  }
+
+  .filter-buttons {
+    width: unset;
+    height: unset;
+    background: unset;
+    box-shadow: unset;
+    border-radius: unset;
+    position: unset;
+    top: unset;
+    left: unset;
+    transform: unset;
+  }
+}
+
+@media (min-width: 1430px) {
+  .background {
+    background-size: 100%;
+  }
 }

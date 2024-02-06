@@ -6,7 +6,7 @@ function Task({ task, onCheck, onRemove }) {
     <div className={`todo-task ${task.completed && "completed"}`}>
       <div>
         <button className="check" onClick={(e) => onCheck(task.id)}>
-          <img src={iconCheck} />
+          {task.completed && <img src={iconCheck} />}
         </button>
         <span>{task.title}</span>
       </div>
