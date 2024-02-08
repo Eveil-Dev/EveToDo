@@ -3,7 +3,7 @@ import iconCross from "../assets/images/icon-cross.svg";
 
 function Task({ task, onCheck, onRemove }) {
   return (
-    <div className={`todo-task ${task.completed && "completed"}`}>
+    <div className={`todo-task ${task.completed && "completed"}`} draggable>
       <div>
         <button className="check" onClick={(e) => onCheck(task.id)}>
           {task.completed && <img src={iconCheck} />}

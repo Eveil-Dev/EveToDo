@@ -1,16 +1,32 @@
 import iconMoon from "./assets/images/icon-moon.svg";
 import iconSun from "./assets/images/icon-sun.svg";
 import Task from "./components/Task";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 function App() {
-  const [darkMode, setDarkMode] = useState(false);
-  const [tasks, setTasks] = useState([]);
+  const [darkMode, setDarkMode] = useState(() =>
+    localStorage.getItem("theme")
+      ? JSON.parse(localStorage.getItem("theme")).darkMode
+      : false
+  );
+  const [tasks, setTasks] = useState(() =>
+    localStorage.getItem("tasks")
+      ? JSON.parse(localStorage.getItem("tasks"))
+      : []
+  );
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [filter, setFilter] = useState("all");
 
-  let filteredTasks;
+  useEffect(
+    function () {
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    },
+    [tasks]
+  );
+
   const itemsLeft = tasks.filter((task) => task.completed == false).length;
+  let filteredTasks;
 
   if (filter == "all") filteredTasks = tasks;
   if (filter == "active")
@@ -26,7 +42,11 @@ function App() {
     if (newTaskTitle == "") return;
     setTasks((tasks) => [
       ...tasks,
-      { id: uid(), title: newTaskTitle, completed: false },
+      {
+        id: uid(),
+        title: newTaskTitle,
+        completed: false,
+      },
     ]);
     setNewTaskTitle("");
   }
@@ -48,7 +68,18 @@ function App() {
   }
 
   function handleChangeTheme() {
+    localStorage.setItem("theme", JSON.stringify({ darkMode: !darkMode }));
     setDarkMode((darkMode) => !darkMode);
+  }
+
+  function handleDragEnd(result) {
+    setTasks((tasks) => {
+      const tasksCopy = [...tasks];
+      const task = tasks.find((task) => task.id == result.draggableId);
+      tasksCopy.splice(result.source.index, 1);
+      tasksCopy.splice(result.destination.index, 0, { ...task });
+      return tasksCopy;
+    });
   }
 
   return (
@@ -73,46 +104,66 @@ function App() {
           />
         </form>
         <div className="todo-main">
-          <div className="todo-tasks styled-scroll">
-            {filteredTasks.length > 0 ? (
-              filteredTasks.map((task) => (
-                <Task
-                  task={task}
-                  onCheck={handleCheck}
-                  onRemove={handleRemove}
-                  key={task.id}
-                />
-              ))
-            ) : (
-              <span className="todo-message">No tasks!</span>
-            )}
-          </div>
-          <div className="todo-footer">
-            <span className="count">{itemsLeft} items left</span>
-            <div className="filter-buttons">
-              <button
-                className={filter == "all" && "active"}
-                onClick={(e) => setFilter("all")}
-              >
-                All
-              </button>
-              <button
-                className={filter == "active" && "active"}
-                onClick={(e) => setFilter("active")}
-              >
-                Active
-              </button>
-              <button
-                className={filter == "completed" && "active"}
-                onClick={(e) => setFilter("completed")}
-              >
-                Completed
-              </button>
-            </div>
-            <button className="clear-button" onClick={handleClearCompleted}>
-              Clear Completed
+          <DragDropContext onDragEnd={handleDragEnd}>
+            <Droppable droppableId="droppable">
+              {(provided) => (
+                <ul
+                  className="todo-tasks styled-scroll"
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                >
+                  {filteredTasks.map((task, index) => (
+                    <Draggable
+                      key={task.id}
+                      draggableId={task.id}
+                      index={index}
+                    >
+                      {(provided) => (
+                        <li
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <Task
+                            task={task}
+                            onCheck={handleCheck}
+                            onRemove={handleRemove}
+                          />
+                        </li>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </ul>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </div>
+        <div className="todo-footer">
+          <span className="count">{itemsLeft} items left</span>
+          <div className="filter-buttons">
+            <button
+              className={filter == "all" && "active"}
+              onClick={(e) => setFilter("all")}
+            >
+              All
+            </button>
+            <button
+              className={filter == "active" && "active"}
+              onClick={(e) => setFilter("active")}
+            >
+              Active
+            </button>
+            <button
+              className={filter == "completed" && "active"}
+              onClick={(e) => setFilter("completed")}
+            >
+              Completed
             </button>
           </div>
+          <button className="clear-button" onClick={handleClearCompleted}>
+            Clear Completed
+          </button>
         </div>
       </div>
     </div>
